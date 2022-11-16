@@ -1,4 +1,4 @@
-import * as React from "react";
+import { forwardRef, useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -7,16 +7,39 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Link } from "react-router-dom";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../firebase-config";
 
 import "./SignIn.css";
 
 const theme = createTheme();
 
+const Alert = forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
 export default function SignIn() {
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const [errOpen, setErrOpen] = useState(false);
+  const [openBackdrop, setOpenBackdrop] = useState(false);
+  const [errorMsg, setErrorMsg] = useState(
+    "An Error Occured. Try again later."
+  );
+
+  const handleErrorClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setErrOpen(false);
+  };
 
   const handleEmail = (event) => {
     setEmail(event.target.value);
@@ -26,13 +49,28 @@ export default function SignIn() {
   };
 
   const handleSubmit = async (event) => {
+    setOpenBackdrop(true);
     event.preventDefault();
-    const postData = {
-      email: email,
-      password: password,
-    };
 
-    console.log(postData);
+    try {
+      const res = await signInWithEmailAndPassword(auth, email, password);
+      sessionStorage.setItem("refreshToken", res._tokenResponse.refreshToken);
+      setOpenBackdrop(false);
+      window.location.reload();
+    } catch (error) {
+      setOpenBackdrop(false);
+      if (error.code === "auth/wrong-password") {
+        setErrorMsg("Wrong password!");
+      } else if (error.code === "auth/user-not-found") {
+        setErrorMsg("User not found !");
+      } else if (error.code === "auth/user-disabled") {
+        setErrorMsg("You account is disabled.");
+      } else {
+        setErrorMsg("Something went wrong. Try again later.");
+      }
+      setErrOpen(true);
+      console.error(error);
+    }
   };
 
   return (
@@ -106,6 +144,27 @@ export default function SignIn() {
           </Box>
         </Box>
       </Container>
+      <Snackbar
+        key={"error"}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        open={errOpen}
+        autoHideDuration={6000}
+        onClose={handleErrorClose}
+      >
+        <Alert
+          onClose={handleErrorClose}
+          severity="error"
+          sx={{ width: "100%" }}
+        >
+          {errorMsg}
+        </Alert>
+      </Snackbar>
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={openBackdrop}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </ThemeProvider>
   );
 }

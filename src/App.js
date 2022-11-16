@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -11,13 +12,35 @@ import SignUp from "./components/SignUp/SignUp";
 import DashBoard from "./components/DashBoard/DashBoard";
 
 function App() {
+  const [logged, setLogged] = useState(false);
+  useEffect(() => {
+    const token = sessionStorage.getItem("refreshToken");
+    if (token) {
+      setLogged(true);
+    } else if (!token) {
+      setLogged(false);
+    }
+  }, []);
+
   return (
     <Router>
       <Routes>
         <Route path="/" exact element={<HomePage />} />
-        <Route path="/login" exact element={<SignIn />} />
-        <Route path="/register" exact element={<SignUp />} />
-        <Route path="/dashboard" exact element={<DashBoard />} />
+        <Route
+          path="/login"
+          exact
+          element={logged ? <Navigate to="/dashboard" /> : <SignIn />}
+        />
+        <Route
+          path="/register"
+          exact
+          element={logged ? <Navigate to="/dashboard" /> : <SignUp />}
+        />
+        <Route
+          path="/dashboard"
+          exact
+          element={logged ? <DashBoard /> : <Navigate to="/login" />}
+        />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>

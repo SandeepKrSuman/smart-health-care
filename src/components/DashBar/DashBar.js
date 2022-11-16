@@ -11,7 +11,8 @@ import { red } from "@mui/material/colors";
 
 export default function DashBar() {
   function handleLogOut() {
-    console.log("Logout!");
+    sessionStorage.removeItem("refreshToken");
+    window.location.reload();
   }
 
   return (
@@ -20,7 +21,7 @@ export default function DashBar() {
         <AppBar position="static">
           <Toolbar>
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              "userName"
+              Welcome!
             </Typography>
             <Tooltip title="Log Out">
               <IconButton onClick={handleLogOut} sx={{ p: 0 }}>

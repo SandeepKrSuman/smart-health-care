@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { forwardRef, useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -10,12 +10,22 @@ import Container from "@mui/material/Container";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Link } from "react-router-dom";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../firebase-config";
 
 import "./SignUp.css";
 
 const theme = createTheme();
+
+const Alert = forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 export default function SignUp() {
   const [fname, setFname] = useState("");
@@ -24,6 +34,20 @@ export default function SignUp() {
   const [password, setPassword] = useState("");
   const [dob, setDob] = useState("");
   const [gender, setGender] = useState("");
+
+  const [errOpen, setErrOpen] = useState(false);
+  const [openBackdrop, setOpenBackdrop] = useState(false);
+  const [errorMsg, setErrorMsg] = useState(
+    "An Error Occured. Try again later."
+  );
+
+  const handleErrorClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setErrOpen(false);
+  };
 
   const handleFname = (event) => {
     setFname(event.target.value);
@@ -45,18 +69,37 @@ export default function SignUp() {
   };
 
   const handleSubmit = async (event) => {
+    setOpenBackdrop(true);
     event.preventDefault();
 
-    const postData = {
-      fname: fname,
-      lname: lname,
-      email: email,
-      password: password,
-      dob: dob,
-      gender: gender,
-    };
+    // const postData = {
+    //   fname: fname,
+    //   lname: lname,
+    //   email: email,
+    //   password: password,
+    //   dob: dob,
+    //   gender: gender,
+    // };
 
-    console.log(postData);
+    try {
+      const res = await createUserWithEmailAndPassword(auth, email, password);
+      sessionStorage.setItem("refreshToken", res._tokenResponse.refreshToken);
+      setOpenBackdrop(false);
+      window.location.reload();
+    } catch (error) {
+      setOpenBackdrop(false);
+
+      if (error.code === "auth/email-already-in-use") {
+        setErrorMsg("Email already in use!");
+      } else if (error.code === "auth/weak-password") {
+        setErrorMsg("Password should be at least 6 characters");
+      } else {
+        setErrorMsg("Something went wrong. Try again later.");
+      }
+      setErrOpen(true);
+
+      console.error(error.message);
+    }
   };
 
   return (
@@ -123,20 +166,6 @@ export default function SignUp() {
                   value={dob}
                   onChange={handleDob}
                 />
-                {/* <Select
-                  labelId="select-age-label"
-                  fullWidth
-                  required
-                  id="select-age"
-                  label="Age"
-                  value={age}
-                  name="age"
-                  onChange={handleAge}
-                >
-                  <MenuItem value={"24"}>24</MenuItem>
-                  <MenuItem value={"25"}>25</MenuItem>
-                  <MenuItem value={"N"}>prefer not to say</MenuItem>
-                </Select> */}
               </Grid>
               <Grid item xs={12} sm={6}>
                 <InputLabel id="select-gender-label">Gender</InputLabel>
@@ -200,6 +229,27 @@ export default function SignUp() {
           </Box>
         </Box>
       </Container>
+      <Snackbar
+        key={"error"}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        open={errOpen}
+        autoHideDuration={6000}
+        onClose={handleErrorClose}
+      >
+        <Alert
+          onClose={handleErrorClose}
+          severity="error"
+          sx={{ width: "100%" }}
+        >
+          {errorMsg}
+        </Alert>
+      </Snackbar>
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={openBackdrop}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </ThemeProvider>
   );
 }
