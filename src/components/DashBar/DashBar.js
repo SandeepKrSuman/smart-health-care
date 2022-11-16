@@ -9,9 +9,10 @@ import IconButton from "@mui/material/IconButton";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { red } from "@mui/material/colors";
 
-export default function DashBar() {
+export default function DashBar(props) {
   function handleLogOut() {
     sessionStorage.removeItem("refreshToken");
+    sessionStorage.removeItem("username");
     window.location.reload();
   }
 
@@ -21,7 +22,7 @@ export default function DashBar() {
         <AppBar position="static">
           <Toolbar>
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              Welcome!
+              {props.userName}
             </Typography>
             <Tooltip title="Log Out">
               <IconButton onClick={handleLogOut} sx={{ p: 0 }}>

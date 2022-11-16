@@ -17,7 +17,8 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Link } from "react-router-dom";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../firebase-config";
+import { auth, db } from "../../firebase-config";
+import { collection, addDoc } from "firebase/firestore";
 
 import "./SignUp.css";
 
@@ -72,18 +73,22 @@ export default function SignUp() {
     setOpenBackdrop(true);
     event.preventDefault();
 
-    // const postData = {
-    //   fname: fname,
-    //   lname: lname,
-    //   email: email,
-    //   password: password,
-    //   dob: dob,
-    //   gender: gender,
-    // };
+    const postData = {
+      fname: fname,
+      lname: lname,
+      email: email,
+      dob: dob,
+      gender: gender,
+    };
 
     try {
       const res = await createUserWithEmailAndPassword(auth, email, password);
-      sessionStorage.setItem("refreshToken", res._tokenResponse.refreshToken);
+      if (res._tokenResponse.refreshToken) {
+        sessionStorage.setItem("refreshToken", res._tokenResponse.refreshToken);
+        sessionStorage.setItem("logemail", email);
+        await addDoc(collection(db, "users"), postData);
+        sessionStorage.setItem("username", fname);
+      }
       setOpenBackdrop(false);
       window.location.reload();
     } catch (error) {

@@ -14,7 +14,8 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Link } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../firebase-config";
+import { auth, db } from "../../firebase-config";
+import { collection, getDocs, query, where } from "firebase/firestore";
 
 import "./SignIn.css";
 
@@ -55,6 +56,9 @@ export default function SignIn() {
     try {
       const res = await signInWithEmailAndPassword(auth, email, password);
       sessionStorage.setItem("refreshToken", res._tokenResponse.refreshToken);
+      const q = query(collection(db, "users"), where("email", "==", email));
+      const querySnapshot = await getDocs(q);
+      sessionStorage.setItem("username", querySnapshot.docs[0].data().fname);
       setOpenBackdrop(false);
       window.location.reload();
     } catch (error) {
