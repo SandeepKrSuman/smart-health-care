@@ -53,7 +53,7 @@ function getInstruction(data) {
       msg = "Remider: Take regular medicines";
   }
 
-  return msg;
+  return { str, msg };
 }
 
 export default getInstruction;
