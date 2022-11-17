@@ -38,7 +38,7 @@ function HealthForm() {
     setDbp(event.target.value);
   };
 
-  async function handleSubmit(e) {
+  function handleSubmit(e) {
     setOpenBackdrop(true);
     e.preventDefault();
 
@@ -49,15 +49,17 @@ function HealthForm() {
       dbp: Number(dbp),
     };
 
-    setErrorMessage(getInstruction(healthData));
+    const { str, msg } = getInstruction(healthData);
+    setErrorMessage(msg);
     setHrate("");
     setBsugar("");
     setSbp("");
     setDbp("");
     setErrOpen(true);
+    if (str === "011" || str === "101" || str === "110" || str === "111") {
+      window.open("tel:102", "_self");
+    }
     setInterval(() => setOpenBackdrop(false), 4000);
-
-    // console.log(healthData);
   }
 
   const handleErrorClose = (event, reason) => {
