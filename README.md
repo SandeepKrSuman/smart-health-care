@@ -4,6 +4,10 @@ The Smart Health Care System is an application that takes health data as an inpu
 
 ### Run the APP Locally
 
+1. Fork this repo [[_learn_](https://docs.github.com/en/get-started/quickstart/fork-a-repo)]
+2. Clone the forked repo [[_learn_](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)]
+3. Run the app [*see below*]
+
 Go to the project directory and run the following command from the terminal:
 
 ```javascript
