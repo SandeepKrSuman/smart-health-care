@@ -1,19 +1,23 @@
 function getInstruction(data) {
   const { hrate, bsugar, sbp, dbp } = data;
 
+  const heartThreshold = sessionStorage.getItem("heart");
+  const sugarThreshold = sessionStorage.getItem("sugar");
+  const pressureThreshold = sessionStorage.getItem("pressure");
+
   let smp = 0;
   let shrm = 0;
   let sbsm = 0;
 
-  if (sbp > 140 || dbp > 190) {
+  if (sbp > 140 || dbp >= pressureThreshold) {
     smp = 1;
   }
 
-  if (hrate > 95 || hrate < 70) {
+  if (hrate >= heartThreshold) {
     shrm = 1;
   }
 
-  if (bsugar > 99) {
+  if (bsugar > sugarThreshold) {
     sbsm = 1;
   }
 
