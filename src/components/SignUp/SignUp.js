@@ -28,6 +28,12 @@ const Alert = forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
+function getAge(birthday) {
+  const dob = new Date(birthday);
+  const diffMs = Date.now() - dob.getTime();
+  return Math.floor(diffMs / (1000 * 60 * 60 * 24 * 365));
+}
+
 export default function SignUp() {
   const [fname, setFname] = useState("");
   const [lname, setLname] = useState("");
@@ -88,6 +94,8 @@ export default function SignUp() {
         sessionStorage.setItem("logemail", email);
         await addDoc(collection(db, "users"), postData);
         sessionStorage.setItem("username", fname);
+        sessionStorage.setItem("age", getAge(dob));
+        sessionStorage.setItem("gender", gender);
       }
       setOpenBackdrop(false);
       window.location.reload();

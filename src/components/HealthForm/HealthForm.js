@@ -12,7 +12,7 @@ const Alert = forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-function HealthForm() {
+function HealthForm(props) {
   const [errorMessage, setErrorMessage] = useState("Error");
   const [openBackdrop, setOpenBackdrop] = useState(false);
   const [errOpen, setErrOpen] = useState(false);
@@ -83,6 +83,9 @@ function HealthForm() {
         <Typography variant="h5" gutterBottom component="div">
           Enter Health Details:
         </Typography>
+        <p className="patdetails">
+          {`${props.userName} (${props.userAge}Y ${props.userGender})`}
+        </p>
         <div className="container">
           <form validate="true" onSubmit={handleSubmit}>
             <div className="rrow">

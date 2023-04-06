@@ -67,6 +67,15 @@ label {
   clear: both;
 }
 
+.patdetails {
+  font-family: "Montserrat", sans-serif;
+  margin: 0;
+  margin-bottom: 8px;
+  color: #BDCDD6;
+  text-align: right;
+  opacity: 0.4;
+}
+
 @media screen and (max-width: 600px) {
   .col-25,
   .col-75,
