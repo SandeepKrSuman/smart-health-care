@@ -8,6 +8,9 @@ const calcHeartThreshold = (data) => {
   const filteredData = data.filter(
     (row) => row.Age === age && row.Sex === gender
   );
+
+  if (filteredData.length === 0) return 120;
+
   const sum = filteredData.reduce((acc, row) => acc + parseInt(row.MaxHR), 0);
   const mean = sum / filteredData.length;
 
@@ -33,6 +36,9 @@ const calcPressureThreshold = (data) => {
   const filteredData = data.filter(
     (row) => row.Age === age && row.Sex === gender
   );
+
+  if (filteredData.length === 0) return 100;
+
   const sum = filteredData.reduce(
     (acc, row) => acc + parseInt(row.RestingBP),
     0

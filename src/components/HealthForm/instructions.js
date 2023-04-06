@@ -9,7 +9,7 @@ function getInstruction(data) {
   let shrm = 0;
   let sbsm = 0;
 
-  if (sbp > 140 || dbp >= pressureThreshold) {
+  if (sbp >= 130 || dbp >= pressureThreshold) {
     smp = 1;
   }
 
