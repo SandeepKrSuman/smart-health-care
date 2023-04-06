@@ -186,7 +186,6 @@ export default function SignUp() {
                 >
                   <MenuItem value={"F"}>F</MenuItem>
                   <MenuItem value={"M"}>M</MenuItem>
-                  <MenuItem value={"N"}>Other</MenuItem>
                 </Select>
               </Grid>
               <Grid item xs={12}>
