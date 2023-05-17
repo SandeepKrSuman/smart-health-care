@@ -1,3 +1,5 @@
+const audio = new Audio("/assets/siren.mp3");
+
 function getInstruction(data) {
   const { hrate, bsugar, sbp, dbp } = data;
 
@@ -42,14 +44,17 @@ function getInstruction(data) {
       break;
 
     case "101":
+      audio.play();
       msg = "⚠ Calling Hospital.. ... Medical Support arriving";
       break;
 
     case "110":
+      audio.play();
       msg = "⚠ Calling Hospital.. ... Medical Support arriving";
       break;
 
     case "111":
+      audio.play();
       msg = "⚠ Calling Hospital.. ... Medical Support arriving";
       break;
 
