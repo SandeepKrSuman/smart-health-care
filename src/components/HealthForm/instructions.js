@@ -15,11 +15,11 @@ function getInstruction(data) {
     smp = 1;
   }
 
-  if (hrate >= heartThreshold) {
+  if (hrate >= heartThreshold || hrate <= 68) {
     shrm = 1;
   }
 
-  if (bsugar > sugarThreshold) {
+  if (bsugar > sugarThreshold || bsugar < 80) {
     sbsm = 1;
   }
 
@@ -28,7 +28,7 @@ function getInstruction(data) {
 
   switch (str) {
     case "000":
-      msg = "Reminder: Take regular medicines.";
+      msg = "Normal: Take regular medicines.";
       break;
 
     case "001":

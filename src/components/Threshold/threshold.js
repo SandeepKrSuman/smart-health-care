@@ -10,7 +10,7 @@ const calcHeartThreshold = (data) => {
     (row) => row.Age === age && row.Sex === gender
   );
 
-  if (filteredData.length === 0) return 120;
+  if (filteredData.length === 0) return 220 - parseInt(age);
 
   const count = filteredData.length;
   const sum = filteredData.reduce((acc, row) => acc + parseInt(row.MaxHR), 0);
