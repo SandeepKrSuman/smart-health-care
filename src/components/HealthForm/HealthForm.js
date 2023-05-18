@@ -57,7 +57,7 @@ function HealthForm(props) {
     setDbp("");
     setErrOpen(true);
 
-    setInterval(() => {
+    setTimeout(() => {
       setOpenBackdrop(false);
 
       if (str === "011" || str === "101" || str === "110" || str === "111") {
